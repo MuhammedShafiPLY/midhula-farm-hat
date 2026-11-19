@@ -17,9 +17,6 @@ import { SPECIMENS, type Specimen } from "@/lib/specimens";
 
 export default function OceanShowcase() {
   const [activeSpecimen, setActiveSpecimen] = useState<Specimen | null>(null);
-  const [selected3DSpecimenId, setSelected3DSpecimenId] = useState<
-    "01" | "02" | "03"
-  >("01");
   const [inquirySlug, setInquirySlug] = useState<string>(SPECIMENS[0].slug);
   const prefersReducedMotion = useReducedMotion();
 
@@ -100,14 +97,13 @@ export default function OceanShowcase() {
       {/* Full-viewport persistent 3D swimming Betta fish moving continuously through all sections */}
       <SwimmingFish
         pointerRef={pointerRef}
-        activeSpecimenId={selected3DSpecimenId}
+        activeSpecimenId="01"
       />
 
       <CustomCursor />
       <Header
         onExploreClick={() => {
           setActiveSpecimen(SPECIMENS[0]);
-          setSelected3DSpecimenId("01");
         }}
       />
 
@@ -115,15 +111,10 @@ export default function OceanShowcase() {
         <OceanHero
           onInspectFeatured={() => {
             setActiveSpecimen(SPECIMENS[0]);
-            setSelected3DSpecimenId("01");
           }}
         />
         <GallerySection
-          activeSpecimenId={selected3DSpecimenId}
           onSelectSpecimen={(specimen) => setActiveSpecimen(specimen)}
-          onActivate3DSpecimen={(specimen) =>
-            setSelected3DSpecimenId(specimen.id)
-          }
         />
         <FishExplanationSection onTriggerFishAction={handleTriggerFishAction} />
         <AboutSection />
@@ -140,8 +131,6 @@ export default function OceanShowcase() {
         onClose={() => setActiveSpecimen(null)}
         onSelectSpecimen={(specimen) => setActiveSpecimen(specimen)}
         onInquire={(specimen) => setInquirySlug(specimen.slug)}
-        onActivate3D={(specimen) => setSelected3DSpecimenId(specimen.id)}
-        is3DActive={activeSpecimen?.id === selected3DSpecimenId}
       />
     </div>
   );

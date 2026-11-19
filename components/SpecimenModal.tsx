@@ -11,8 +11,6 @@ interface SpecimenModalProps {
   onClose: () => void;
   onSelectSpecimen?: (specimen: Specimen) => void;
   onInquire?: (specimen: Specimen) => void;
-  onActivate3D?: (specimen: Specimen) => void;
-  is3DActive?: boolean;
 }
 
 export default function SpecimenModal({
@@ -21,8 +19,6 @@ export default function SpecimenModal({
   onClose,
   onSelectSpecimen,
   onInquire,
-  onActivate3D,
-  is3DActive = false,
 }: SpecimenModalProps) {
   // Prevent background scroll and register Escape key listener while modal is open
   useEffect(() => {
@@ -90,10 +86,7 @@ export default function SpecimenModal({
                         key={item.id}
                         type="button"
                         data-cursor="interactive"
-                        onClick={() => {
-                          onSelectSpecimen?.(item);
-                          onActivate3D?.(item);
-                        }}
+                        onClick={() => onSelectSpecimen?.(item)}
                         className={`cursor-pointer px-2.5 py-1 text-[10px] font-bold tracking-[0.2em] uppercase transition-all ${
                           isCurrent
                             ? "border border-amber-400 bg-amber-400/20 text-amber-200 shadow-[0_0_12px_rgba(245,158,11,0.25)]"
@@ -206,24 +199,6 @@ export default function SpecimenModal({
                   </span>
 
                   <div className="flex flex-wrap items-center gap-3">
-                    <button
-                      type="button"
-                      data-cursor="interactive"
-                      onClick={() => onActivate3D?.(specimen)}
-                      className={`cursor-pointer inline-flex items-center gap-1.5 px-3 py-2 text-xs font-bold tracking-[0.18em] uppercase transition-all ${
-                        is3DActive
-                          ? "border border-amber-400 bg-amber-400/20 text-amber-200"
-                          : "border border-white/20 bg-white/[0.04] text-slate-300 hover:border-amber-400/60 hover:text-white"
-                      }`}
-                    >
-                      <span
-                        className={`h-2 w-2 rounded-full ${
-                          is3DActive ? "bg-amber-400 animate-pulse" : "bg-slate-400"
-                        }`}
-                      />
-                      <span>{is3DActive ? "Active in 3D" : "Swim in 3D"}</span>
-                    </button>
-
                     <a
                       href={getWhatsAppOrderUrl(specimen.name, specimen.id)}
                       target="_blank"

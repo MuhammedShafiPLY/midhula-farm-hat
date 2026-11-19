@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { createBubbleTexture } from "./bettaTextures";
 import { buildBettaFish, BETTA_PALETTES, type BettaPalette } from "./buildBettaFish";
+import { buildFrySchool } from "./buildFrySchool";
 
 export interface PointerTracker {
   x: number;
@@ -96,6 +97,10 @@ export default function FishCanvas3D({
     fishPivot.position.set(isDesktopInitial ? 1.45 : 0, 0.0, 0.15);
     fishPivot.scale.setScalar(isDesktopInitial ? 1.05 : 0.8);
     scene.add(fishPivot);
+
+    // Living background school of baby fish fry (fish kunjungal)
+    const frySchool = buildFrySchool();
+    scene.add(frySchool.mesh);
 
     // 3D Underwater dust & burst bubbles
     const ambientCount = 50;
@@ -252,9 +257,11 @@ export default function FishCanvas3D({
 
       const pointer = pointerRef.current;
 
+      let isClickBurst = false;
       // Water click -> burst bubbles
       if (pointer.lastClickAt > lastHandledClickAt && rect.width > 0 && rect.height > 0) {
         lastHandledClickAt = pointer.lastClickAt;
+        isClickBurst = true;
         ndcVec.set(
           ((pointer.clickX - rect.left) / rect.width) * 2 - 1,
           -((pointer.clickY - rect.top) / rect.height) * 2 + 1
@@ -464,6 +471,9 @@ export default function FishCanvas3D({
         posAttr.needsUpdate = true;
       }
 
+      // Update schooling background baby fish fry (fish kunjungal)
+      frySchool.update(dt, elapsed, cursor3D, isClickBurst, reducedMotion);
+
       renderer.render(scene, camera);
     };
 
@@ -474,6 +484,7 @@ export default function FishCanvas3D({
       document.removeEventListener("visibilitychange", handleVisibilityChange);
       window.removeEventListener("scroll", handleScroll);
       resizeObserver.disconnect();
+      frySchool.dispose();
       betta.dispose();
       bubbleGeo.dispose();
       bubbleMat.dispose();

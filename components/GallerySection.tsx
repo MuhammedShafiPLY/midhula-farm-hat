@@ -11,9 +11,7 @@ import {
 } from "@/lib/specimens";
 
 interface GallerySectionProps {
-  activeSpecimenId?: "01" | "02" | "03";
   onSelectSpecimen: (specimen: Specimen) => void;
-  onActivate3DSpecimen: (specimen: Specimen) => void;
 }
 
 const CATEGORIES: SpecimenCategory[] = [
@@ -25,9 +23,7 @@ const CATEGORIES: SpecimenCategory[] = [
 ];
 
 export default function GallerySection({
-  activeSpecimenId = "01",
   onSelectSpecimen,
-  onActivate3DSpecimen,
 }: GallerySectionProps) {
   const [selectedCategory, setSelectedCategory] = useState<SpecimenCategory>("All");
 
@@ -78,7 +74,7 @@ export default function GallerySection({
           </div>
 
           <p className="max-w-md text-sm leading-relaxed text-[#94a3b8]">
-            Click any specimen below to morph the living Three.js 3D swimmer into its color palette, inspect water parameters, or order directly via WhatsApp with all-India live fish delivery assurance.
+            Browse Midhula Farm Hut&apos;s signature live fish showlines below, inspect habitat parameters, lineage benchmarks, or order directly via WhatsApp with safe live transit across India.
           </p>
         </motion.div>
 
@@ -163,8 +159,6 @@ export default function GallerySection({
         ) : (
           <div className="mt-12 grid grid-cols-1 gap-6 lg:grid-cols-3 lg:gap-8">
             {filteredSpecimens.map((specimen, index) => {
-              const isCurrent3D = specimen.id === activeSpecimenId;
-
               return (
                 <motion.article
                   key={specimen.id}
@@ -176,21 +170,14 @@ export default function GallerySection({
                     delay: index * 0.1,
                     ease: [0.22, 1, 0.36, 1],
                   }}
-                  className={`group relative flex flex-col border transition-all duration-300 ${
-                    isCurrent3D
-                      ? "border-amber-400/80 shadow-[0_0_28px_rgba(245,158,11,0.22)]"
-                      : "border-white/10 hover:border-amber-400/40"
-                  } bg-[#151c24]/90 backdrop-blur-md`}
+                  className="group relative flex flex-col border border-white/10 bg-[#151c24]/90 backdrop-blur-md transition-all duration-300 hover:border-amber-400/40"
                 >
-                  {/* Specimen portrait frame - clicking activates 3D swimmer and opens dossier */}
+                  {/* Specimen portrait frame - clicking opens dossier */}
                   <button
                     type="button"
                     data-cursor="interactive"
-                    onClick={() => {
-                      onSelectSpecimen(specimen);
-                      onActivate3DSpecimen(specimen);
-                    }}
-                    aria-label={`Open dossier for ${specimen.name} and activate 3D swimmer`}
+                    onClick={() => onSelectSpecimen(specimen)}
+                    aria-label={`Open dossier for ${specimen.name}`}
                     className="cursor-pointer relative aspect-[4/3] w-full overflow-hidden bg-[#0e141b] text-left focus:outline-none"
                   >
                     <div
@@ -215,7 +202,7 @@ export default function GallerySection({
                     {/* Hover prompt to open dossier */}
                     <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center opacity-0 transition-opacity duration-300 group-hover:opacity-100 bg-black/40 backdrop-blur-[1px]">
                       <span className="border border-amber-400/80 bg-[#0b0f13]/90 px-4 py-1.5 text-[11px] font-bold tracking-[0.2em] text-amber-300 uppercase shadow-xl">
-                        Inspect Dossier & 3D ↗
+                        Inspect Dossier ↗
                       </span>
                     </div>
 
@@ -224,14 +211,8 @@ export default function GallerySection({
                       <span className="font-display text-xs font-bold tracking-[0.24em] text-white/90">
                         SPECIMEN {specimen.id}
                       </span>
-                      <span
-                        className={`px-2.5 py-1 text-[10px] font-bold tracking-[0.18em] uppercase backdrop-blur-sm transition-colors ${
-                          isCurrent3D
-                            ? "border border-amber-400 bg-amber-400/25 text-amber-200 shadow-[0_0_12px_rgba(245,158,11,0.35)]"
-                            : "border border-emerald-400/40 bg-emerald-500/15 text-emerald-300"
-                        }`}
-                      >
-                        {isCurrent3D ? "✦ Swimming in 3D" : specimen.availability}
+                      <span className="border border-emerald-400/40 bg-emerald-500/15 px-2.5 py-1 text-[10px] font-bold tracking-[0.18em] text-emerald-300 uppercase backdrop-blur-sm">
+                        {specimen.availability}
                       </span>
                     </div>
                   </button>
@@ -250,10 +231,7 @@ export default function GallerySection({
                       <button
                         type="button"
                         data-cursor="interactive"
-                        onClick={() => {
-                          onSelectSpecimen(specimen);
-                          onActivate3DSpecimen(specimen);
-                        }}
+                        onClick={() => onSelectSpecimen(specimen)}
                         className="cursor-pointer text-left font-display mt-2 text-xl font-bold tracking-tight text-white transition-colors hover:text-amber-300"
                       >
                         {specimen.name}
@@ -292,38 +270,18 @@ export default function GallerySection({
                           <span aria-hidden="true">→</span>
                         </button>
 
-                        <div className="flex items-center gap-2">
-                          <button
-                            type="button"
-                            data-cursor="interactive"
-                            onClick={() => onActivate3DSpecimen(specimen)}
-                            className={`cursor-pointer inline-flex items-center gap-1.5 px-2.5 py-1.5 text-[10px] font-semibold tracking-[0.16em] uppercase transition-all ${
-                              isCurrent3D
-                                ? "border border-amber-400/80 bg-amber-400/20 text-amber-200"
-                                : "border border-white/20 text-slate-300 hover:border-amber-400/60 hover:text-white"
-                            }`}
-                          >
-                            <span
-                              className={`h-1.5 w-1.5 rounded-full ${
-                                isCurrent3D ? "bg-amber-400 animate-pulse" : "bg-slate-500"
-                              }`}
-                            />
-                            <span>{isCurrent3D ? "Swimming" : "Swim in 3D"}</span>
-                          </button>
-
-                          <a
-                            href={getWhatsAppOrderUrl(specimen.name, specimen.id)}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            data-cursor="interactive"
-                            className="cursor-pointer inline-flex items-center gap-1.5 border border-emerald-400/60 bg-emerald-500/15 px-3 py-1.5 text-[10px] font-bold tracking-[0.16em] text-emerald-300 uppercase transition-colors hover:bg-emerald-500/25 hover:text-white"
-                          >
+                        <a
+                          href={getWhatsAppOrderUrl(specimen.name, specimen.id)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          data-cursor="interactive"
+                          className="cursor-pointer inline-flex items-center gap-1.5 border border-emerald-400/60 bg-emerald-500/15 px-3 py-1.5 text-[10px] font-bold tracking-[0.16em] text-emerald-300 uppercase transition-colors hover:bg-emerald-500/25 hover:text-white"
+                        >
                             <svg viewBox="0 0 24 24" className="h-3 w-3 fill-current" aria-hidden="true">
                               <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.03 14.69 2 12.04 2M12.05 3.67C14.25 3.67 16.31 4.53 17.87 6.09C19.42 7.65 20.28 9.72 20.28 11.92C20.28 16.46 16.58 20.15 12.04 20.15C10.56 20.15 9.11 19.76 7.85 19.01L7.55 18.83L4.43 19.65L5.26 16.61L5.06 16.29C4.24 14.99 3.81 13.47 3.81 11.91C3.81 7.37 7.5 3.67 12.05 3.67M9.53 7.35C9.36 7.35 9.09 7.41 8.86 7.66C8.63 7.91 8 8.5 8 9.71C8 10.92 8.89 12.09 9.01 12.25C9.13 12.41 10.74 14.9 13.2 15.96C13.78 16.21 14.24 16.37 14.6 16.48C15.19 16.67 15.72 16.64 16.14 16.58C16.61 16.51 17.58 15.99 17.78 15.42C17.98 14.86 17.98 14.37 17.92 14.28C17.86 14.18 17.71 14.12 17.48 14.01C17.26 13.9 16.15 13.35 15.94 13.27C15.73 13.2 15.58 13.16 15.43 13.39C15.28 13.62 14.85 14.12 14.72 14.28C14.59 14.43 14.46 14.45 14.24 14.34C14.01 14.23 13.29 13.99 12.43 13.22C11.76 12.63 11.31 11.89 11.89 11.66C11.05 11.43 11.17 11.31 11.28 11.2C11.39 11.09 11.52 10.92 11.63 10.79C11.75 10.65 11.79 10.55 11.86 10.4C11.94 10.25 11.9 10.12 11.84 10.01C11.78 9.9 11.34 8.81 11.15 8.37C10.97 7.93 10.79 8 10.66 8C10.53 8 10.38 7.98 10.23 7.98C10.08 7.98 9.85 8.04 9.66 8.24" />
                             </svg>
                             <span>WhatsApp</span>
                           </a>
-                        </div>
                       </div>
                     </div>
                   </div>
