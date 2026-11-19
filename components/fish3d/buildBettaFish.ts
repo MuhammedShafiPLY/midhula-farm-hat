@@ -3,36 +3,56 @@ import * as THREE from "three";
 export interface BettaPalette {
   id: "01" | "02" | "03";
   name: string;
+  texturePath: string;
   tint: string;
   emissive: string;
+  emissiveIntensity: number;
   sheen: string;
+  attenuationColor: string;
   pointLight: string;
+  iridescence: number;
+  bumpScale: number;
 }
 
 export const BETTA_PALETTES: Record<BettaPalette["id"], BettaPalette> = {
   "01": {
     id: "01",
     name: "Fiery Guppy Crimson",
-    tint: "#ff8a8a",
-    emissive: "#780909",
-    sheen: "#ef4444",
+    texturePath: "/images/betta-scarlet.png",
+    tint: "#ffffff",
+    emissive: "#2a0404",
+    emissiveIntensity: 0.16,
+    sheen: "#ff2a6d",
+    attenuationColor: "#ff1744",
     pointLight: "#f59e0b",
+    iridescence: 0.78,
+    bumpScale: 0.034,
   },
   "02": {
     id: "02",
     name: "Electric Crayfish Cobalt",
-    tint: "#93c5fd",
-    emissive: "#0a2656",
-    sheen: "#3b82f6",
+    texturePath: "/images/betta-fish.png",
+    tint: "#ffffff",
+    emissive: "#061838",
+    emissiveIntensity: 0.18,
+    sheen: "#38bdf8",
+    attenuationColor: "#0284c7",
     pointLight: "#60a5fa",
+    iridescence: 0.72,
+    bumpScale: 0.026,
   },
   "03": {
     id: "03",
     name: "Golden Sun & Emerald",
-    tint: "#fde68a",
-    emissive: "#3b2604",
-    sheen: "#f59e0b",
+    texturePath: "/images/betta-emerald.png",
+    tint: "#ffffff",
+    emissive: "#1a2404",
+    emissiveIntensity: 0.18,
+    sheen: "#10b981",
+    attenuationColor: "#10b981",
     pointLight: "#10b981",
+    iridescence: 0.76,
+    bumpScale: 0.028,
   },
 };
 
@@ -45,13 +65,14 @@ export interface BettaRig {
     uSwimSpeed: { value: number };
     uTurnBend: { value: number };
   };
+  setPalette: (id: BettaPalette["id"]) => void;
   dispose: () => void;
 }
 
 const MODEL_WIDTH_WORLD = 3.15;
 const MODEL_HEIGHT_WORLD = MODEL_WIDTH_WORLD * (701 / 917);
 
-// Measured strictly inside the opaque muscular body bounds of /images/betta-fish.png (917x701)
+// Measured strictly inside the opaque muscular body bounds of 917x701 registered maps
 const BODY_PROFILE_POINTS: ReadonlyArray<readonly [number, number, number]> = [
   [0.031, 0.546, 0.557],
   [0.05, 0.511, 0.576],
@@ -75,10 +96,35 @@ const SPINE_GLSL_HELPERS = /* glsl */ `
     float dist = max(0.0, 0.68 - zPos);
     float normD = dist / 2.65;
     float freq = 2.8 + uSwimSpeed * 5.2;
-    float amp = pow(normD, 1.5) * (0.045 + uSwimSpeed * 0.14);
-    float swimWave = sin(uTime * freq - dist * 2.55) * amp;
+    float amp = pow(normD, 1.45) * (0.048 + uSwimSpeed * 0.14);
+    float swimWave = sin(uTime * freq - dist * 2.5) * amp;
     float turnCurve = uTurnBend * pow(normD, 1.55) * 0.46;
     return swimWave + turnCurve;
+  }
+
+  float bettaFinWave(float zPos, float yPos) {
+    float dist = max(0.0, 0.68 - zPos);
+    float normD = dist / 2.65;
+    float freq = 2.8 + uSwimSpeed * 5.2;
+    float amp = pow(normD, 1.4) * (0.052 + uSwimSpeed * 0.15);
+
+    // Primary swimming stroke
+    float primary = sin(uTime * freq - dist * 2.45) * amp;
+    // Traveling harmonic wave along delicate gossamer fin rays
+    float harmonic = sin(uTime * (freq * 1.42) - dist * 4.3 + yPos * 1.2) * (amp * 0.38);
+    // Micro-flutter on translucent silk trailing edges
+    float micro = sin(uTime * 8.2 - dist * 7.8 + yPos * 2.8) * (pow(normD, 2.0) * 0.024);
+    float turnCurve = uTurnBend * pow(normD, 1.55) * 0.46;
+
+    return primary + harmonic + micro + turnCurve;
+  }
+
+  float bettaFinVerticalFlutter(float zPos, float yPos) {
+    float dist = max(0.0, 0.68 - zPos);
+    float normD = dist / 2.65;
+    // Vertical silk billow across dorsal fin canopy and caudal veil
+    float billow = sin(uTime * 3.6 - dist * 3.2 + yPos * 2.2) * (pow(normD, 1.6) * 0.025);
+    return billow;
   }
 `;
 
@@ -124,11 +170,11 @@ function createLuminanceBumpTexture(
   const imageData = ctx.getImageData(0, 0, w, h);
   const data = imageData.data;
 
-  // Convert scale & fin-ray luminance into subtle organic micro-relief
+  // Convert scale & fin-ray luminance into tactile organic micro-relief
   for (let i = 0; i < data.length; i += 4) {
     const a = data[i + 3] / 255;
-    const luma = 0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2];
-    const relief = THREE.MathUtils.clamp((luma * 1.25 - 18) * a, 0, 255);
+    const luma = 0.35 * data[i] + 0.5 * data[i + 1] + 0.15 * data[i + 2];
+    const relief = THREE.MathUtils.clamp((luma * 1.35 - 12) * a, 0, 255);
     data[i] = relief;
     data[i + 1] = relief;
     data[i + 2] = relief;
@@ -307,7 +353,7 @@ function createFinShellGeometry(side: 1 | -1): THREE.BufferGeometry {
   return geo;
 }
 
-function attachSpineShader(
+function attachBodySpineShader(
   material: THREE.MeshPhysicalMaterial,
   uniforms: BettaRig["uniforms"],
   cacheKey: string
@@ -328,6 +374,28 @@ function attachSpineShader(
   };
 }
 
+function attachFinSpineShader(
+  material: THREE.MeshPhysicalMaterial,
+  uniforms: BettaRig["uniforms"],
+  cacheKey: string
+): void {
+  material.customProgramCacheKey = () => cacheKey;
+  material.onBeforeCompile = (shader) => {
+    shader.uniforms.uTime = uniforms.uTime;
+    shader.uniforms.uSwimSpeed = uniforms.uSwimSpeed;
+    shader.uniforms.uTurnBend = uniforms.uTurnBend;
+
+    shader.vertexShader = `${SPINE_GLSL_HELPERS}\n${shader.vertexShader}`.replace(
+      "#include <begin_vertex>",
+      `
+      #include <begin_vertex>
+      transformed.x += bettaFinWave(transformed.z, transformed.y);
+      transformed.y += bettaFinVerticalFlutter(transformed.z, transformed.y);
+      `
+    );
+  };
+}
+
 /**
  * Builds a photorealistic, watertight 3D Betta fish combining a closed 360-degree
  * sculpted head/body manifold with undulating translucent Halfmoon fin membranes.
@@ -343,71 +411,105 @@ export function buildBettaFish(maxAnisotropy = 8): BettaRig {
   };
 
   let disposed = false;
-  let bumpTexture: THREE.CanvasTexture | null = null;
-
   const textureLoader = new THREE.TextureLoader();
-  const bettaTexture = textureLoader.load("/images/betta-fish.png", (loaded) => {
-    if (disposed || !loaded.image) return;
-    const generated = createLuminanceBumpTexture(loaded.image, maxAnisotropy);
-    if (!generated) return;
-    if (disposed) {
-      generated.dispose();
-      return;
-    }
-    bumpTexture = generated;
-    bodyMaterial.bumpMap = bumpTexture;
-    bodyMaterial.bumpScale = 0.022;
-    bodyMaterial.needsUpdate = true;
 
-    finMaterial.bumpMap = bumpTexture;
-    finMaterial.bumpScale = 0.015;
-    finMaterial.needsUpdate = true;
-  });
-  bettaTexture.colorSpace = THREE.SRGBColorSpace;
-  bettaTexture.anisotropy = Math.min(maxAnisotropy, 8);
-  bettaTexture.wrapS = THREE.ClampToEdgeWrapping;
-  bettaTexture.wrapT = THREE.ClampToEdgeWrapping;
+  interface TextureEntry {
+    map: THREE.Texture;
+    bump: THREE.CanvasTexture | null;
+  }
+  const textureCache = new Map<string, TextureEntry>();
+
+  const loadEntry = (path: string): TextureEntry => {
+    let entry = textureCache.get(path);
+    if (!entry) {
+      const map = textureLoader.load(path, (loaded) => {
+        if (disposed || !loaded.image) return;
+        const bump = createLuminanceBumpTexture(loaded.image, maxAnisotropy);
+        if (disposed) {
+          bump?.dispose();
+          return;
+        }
+        const cached = textureCache.get(path);
+        if (cached) {
+          cached.bump = bump;
+          if (currentPalette.texturePath === path) {
+            bodyMaterial.bumpMap = bump;
+            bodyMaterial.bumpScale = currentPalette.bumpScale;
+            bodyMaterial.needsUpdate = true;
+            finMaterial.bumpMap = bump;
+            finMaterial.bumpScale = currentPalette.bumpScale * 0.7;
+            finMaterial.needsUpdate = true;
+          }
+        }
+      });
+      map.colorSpace = THREE.SRGBColorSpace;
+      map.anisotropy = Math.min(maxAnisotropy, 8);
+      map.wrapS = THREE.ClampToEdgeWrapping;
+      map.wrapT = THREE.ClampToEdgeWrapping;
+
+      entry = { map, bump: null };
+      textureCache.set(path, entry);
+    }
+    return entry;
+  };
+
+  // Preload all 3 specimen textures immediately
+  loadEntry(BETTA_PALETTES["01"].texturePath);
+  loadEntry(BETTA_PALETTES["02"].texturePath);
+  loadEntry(BETTA_PALETTES["03"].texturePath);
+
+  let currentPalette = initialPalette;
+  const initialEntry = loadEntry(initialPalette.texturePath);
 
   const bodyMaterial = new THREE.MeshPhysicalMaterial({
-    map: bettaTexture,
+    map: initialEntry.map,
     color: new THREE.Color(initialPalette.tint),
-    emissiveMap: bettaTexture,
+    emissiveMap: initialEntry.map,
     emissive: new THREE.Color(initialPalette.emissive),
-    emissiveIntensity: 0.22,
+    emissiveIntensity: initialPalette.emissiveIntensity,
     transparent: false,
     depthWrite: true,
-    roughness: 0.42,
-    metalness: 0.1,
-    iridescence: 0.36,
-    iridescenceIOR: 1.33,
-    clearcoat: 0.36,
-    clearcoatRoughness: 0.25,
+    roughness: 0.22,
+    metalness: 0.08,
+    clearcoat: 0.88,
+    clearcoatRoughness: 0.12,
+    iridescence: initialPalette.iridescence,
+    iridescenceIOR: 1.38,
+    iridescenceThicknessRange: [120, 360],
+    sheen: 0.7,
+    sheenRoughness: 0.28,
+    sheenColor: new THREE.Color(initialPalette.sheen),
     side: THREE.FrontSide,
   });
 
   const finMaterial = new THREE.MeshPhysicalMaterial({
-    map: bettaTexture,
+    map: initialEntry.map,
     color: new THREE.Color(initialPalette.tint),
-    emissiveMap: bettaTexture,
+    emissiveMap: initialEntry.map,
     emissive: new THREE.Color(initialPalette.emissive),
-    emissiveIntensity: 0.24,
-    alphaTest: 0.06,
+    emissiveIntensity: initialPalette.emissiveIntensity * 1.15,
+    alphaTest: 0.04,
     transparent: true,
     depthWrite: true,
-    roughness: 0.46,
-    metalness: 0.06,
-    iridescence: 0.35,
-    iridescenceIOR: 1.33,
-    clearcoat: 0.28,
-    clearcoatRoughness: 0.28,
-    sheen: 0.55,
-    sheenRoughness: 0.48,
-    sheenColor: new THREE.Color("#7dd3fc"),
-    side: THREE.FrontSide,
+    roughness: 0.25,
+    metalness: 0.04,
+    clearcoat: 0.68,
+    clearcoatRoughness: 0.16,
+    iridescence: initialPalette.iridescence * 0.95,
+    iridescenceIOR: 1.35,
+    iridescenceThicknessRange: [140, 380],
+    sheen: 0.85,
+    sheenRoughness: 0.3,
+    sheenColor: new THREE.Color(initialPalette.sheen),
+    transmission: 0.24,
+    thickness: 0.06,
+    attenuationColor: new THREE.Color(initialPalette.attenuationColor),
+    attenuationDistance: 0.45,
+    side: THREE.DoubleSide,
   });
 
-  attachSpineShader(bodyMaterial, uniforms, "betta-body-wave-v1");
-  attachSpineShader(finMaterial, uniforms, "betta-fin-wave-v1");
+  attachBodySpineShader(bodyMaterial, uniforms, "betta-body-wave-v2");
+  attachFinSpineShader(finMaterial, uniforms, "betta-fin-wave-v2");
 
   const bodyGeo = createClosedBodyGeometry();
   const rightFinGeo = createFinShellGeometry(1);
@@ -418,11 +520,34 @@ export function buildBettaFish(maxAnisotropy = 8): BettaRig {
   const leftFinMesh = new THREE.Mesh(leftFinGeo, finMaterial);
   root.add(bodyMesh, rightFinMesh, leftFinMesh);
 
+  const setPalette = (id: BettaPalette["id"]) => {
+    const pal = BETTA_PALETTES[id] || BETTA_PALETTES["01"];
+    currentPalette = pal;
+    const entry = loadEntry(pal.texturePath);
+
+    bodyMaterial.map = entry.map;
+    bodyMaterial.emissiveMap = entry.map;
+    bodyMaterial.bumpMap = entry.bump;
+    bodyMaterial.bumpScale = pal.bumpScale;
+    bodyMaterial.iridescence = pal.iridescence;
+
+    finMaterial.map = entry.map;
+    finMaterial.emissiveMap = entry.map;
+    finMaterial.bumpMap = entry.bump;
+    finMaterial.bumpScale = pal.bumpScale * 0.7;
+    finMaterial.iridescence = pal.iridescence * 0.95;
+    finMaterial.attenuationColor.set(pal.attenuationColor);
+
+    bodyMaterial.needsUpdate = true;
+    finMaterial.needsUpdate = true;
+  };
+
   return {
     root,
     bodyMaterial,
     finMaterial,
     uniforms,
+    setPalette,
     dispose: () => {
       disposed = true;
       bodyGeo.dispose();
@@ -430,8 +555,11 @@ export function buildBettaFish(maxAnisotropy = 8): BettaRig {
       leftFinGeo.dispose();
       bodyMaterial.dispose();
       finMaterial.dispose();
-      bettaTexture.dispose();
-      bumpTexture?.dispose();
+      textureCache.forEach((entry) => {
+        entry.map.dispose();
+        entry.bump?.dispose();
+      });
+      textureCache.clear();
     },
   };
 }

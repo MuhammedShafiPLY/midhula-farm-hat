@@ -72,22 +72,24 @@ export default function FishCanvas3D({
     container.appendChild(renderer.domElement);
 
     // Deep-ocean studio lighting matching upper-right sunbeams + subtle warm reef bounce
-    const hemiLight = new THREE.HemisphereLight("#7dd3fc", "#041426", 1.55);
+    const initialPal = BETTA_PALETTES[activeSpecimenIdRef.current] || BETTA_PALETTES["01"];
+    const hemiLight = new THREE.HemisphereLight("#7dd3fc", "#041426", 1.65);
     scene.add(hemiLight);
 
-    const sunLight = new THREE.DirectionalLight("#e0f2fe", 2.9);
+    const sunLight = new THREE.DirectionalLight("#e0f2fe", 3.2);
     sunLight.position.set(4.5, 6.2, 4.8);
     scene.add(sunLight);
 
-    const coralRimLight = new THREE.PointLight("#fb923c", 2.0, 10);
+    const coralRimLight = new THREE.PointLight("#fb7185", 2.2, 10);
     coralRimLight.position.set(-3.2, -2.4, 3.0);
     scene.add(coralRimLight);
 
-    const fishAccentLight = new THREE.PointLight("#38bdf8", 2.8, 7.5);
+    const fishAccentLight = new THREE.PointLight(initialPal.pointLight, 2.9, 8.0);
     scene.add(fishAccentLight);
 
     const maxAniso = renderer.capabilities.getMaxAnisotropy();
     const betta = buildBettaFish(maxAniso);
+    betta.setPalette(activeSpecimenIdRef.current || "01");
     const fishPivot = new THREE.Group();
     fishPivot.add(betta.root);
     const isDesktopInitial = width >= 1024;
@@ -188,10 +190,10 @@ export default function FishCanvas3D({
     let isTabHidden = document.hidden;
     let scrollVel = 0;
     let lastScrollY = typeof window !== "undefined" ? window.scrollY : 0;
-    const currentTint = new THREE.Color(BETTA_PALETTES["01"].tint);
-    const currentEmissive = new THREE.Color(BETTA_PALETTES["01"].emissive);
-    const currentSheen = new THREE.Color(BETTA_PALETTES["01"].sheen);
-    const currentLightColor = new THREE.Color(BETTA_PALETTES["01"].pointLight);
+    const currentTint = new THREE.Color(initialPal.tint);
+    const currentEmissive = new THREE.Color(initialPal.emissive);
+    const currentSheen = new THREE.Color(initialPal.sheen);
+    const currentLightColor = new THREE.Color(initialPal.pointLight);
     let lastHandledSpecimenId: BettaPalette["id"] = activeSpecimenIdRef.current;
 
     const clampCinematicDir = (dir: THREE.Vector3) => {
@@ -413,6 +415,7 @@ export default function FishCanvas3D({
       const targetSpecimenId = activeSpecimenIdRef.current;
       if (targetSpecimenId !== lastHandledSpecimenId) {
         lastHandledSpecimenId = targetSpecimenId;
+        betta.setPalette(targetSpecimenId);
         emitBubbleBurst(mouthWorld, 12);
       }
       const palette = BETTA_PALETTES[targetSpecimenId] || BETTA_PALETTES["01"];
