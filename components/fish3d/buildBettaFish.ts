@@ -8,7 +8,6 @@ export interface BettaPalette {
   emissive: string;
   emissiveIntensity: number;
   sheen: string;
-  attenuationColor: string;
   pointLight: string;
   iridescence: number;
   bumpScale: number;
@@ -21,12 +20,11 @@ export const BETTA_PALETTES: Record<BettaPalette["id"], BettaPalette> = {
     texturePath: "/images/betta-scarlet.png",
     tint: "#ffffff",
     emissive: "#2a0404",
-    emissiveIntensity: 0.16,
+    emissiveIntensity: 0.18,
     sheen: "#ff2a6d",
-    attenuationColor: "#ff1744",
     pointLight: "#f59e0b",
     iridescence: 0.78,
-    bumpScale: 0.034,
+    bumpScale: 0.026,
   },
   "02": {
     id: "02",
@@ -34,25 +32,23 @@ export const BETTA_PALETTES: Record<BettaPalette["id"], BettaPalette> = {
     texturePath: "/images/betta-fish.png",
     tint: "#ffffff",
     emissive: "#061838",
-    emissiveIntensity: 0.18,
+    emissiveIntensity: 0.2,
     sheen: "#38bdf8",
-    attenuationColor: "#0284c7",
     pointLight: "#60a5fa",
     iridescence: 0.72,
-    bumpScale: 0.026,
+    bumpScale: 0.022,
   },
   "03": {
     id: "03",
     name: "Golden Sun & Emerald",
     texturePath: "/images/betta-emerald.png",
     tint: "#ffffff",
-    emissive: "#1a2404",
-    emissiveIntensity: 0.18,
+    emissive: "#142404",
+    emissiveIntensity: 0.2,
     sheen: "#10b981",
-    attenuationColor: "#10b981",
     pointLight: "#10b981",
     iridescence: 0.76,
-    bumpScale: 0.028,
+    bumpScale: 0.024,
   },
 };
 
@@ -96,35 +92,18 @@ const SPINE_GLSL_HELPERS = /* glsl */ `
     float dist = max(0.0, 0.68 - zPos);
     float normD = dist / 2.65;
     float freq = 2.8 + uSwimSpeed * 5.2;
-    float amp = pow(normD, 1.45) * (0.048 + uSwimSpeed * 0.14);
-    float swimWave = sin(uTime * freq - dist * 2.5) * amp;
+    float amp = pow(normD, 1.48) * (0.046 + uSwimSpeed * 0.14);
+    float swimWave = sin(uTime * freq - dist * 2.55) * amp;
     float turnCurve = uTurnBend * pow(normD, 1.55) * 0.46;
     return swimWave + turnCurve;
   }
 
-  float bettaFinWave(float zPos, float yPos) {
-    float dist = max(0.0, 0.68 - zPos);
-    float normD = dist / 2.65;
-    float freq = 2.8 + uSwimSpeed * 5.2;
-    float amp = pow(normD, 1.4) * (0.052 + uSwimSpeed * 0.15);
-
-    // Primary swimming stroke
-    float primary = sin(uTime * freq - dist * 2.45) * amp;
-    // Traveling harmonic wave along delicate gossamer fin rays
-    float harmonic = sin(uTime * (freq * 1.42) - dist * 4.3 + yPos * 1.2) * (amp * 0.38);
-    // Micro-flutter on translucent silk trailing edges
-    float micro = sin(uTime * 8.2 - dist * 7.8 + yPos * 2.8) * (pow(normD, 2.0) * 0.024);
-    float turnCurve = uTurnBend * pow(normD, 1.55) * 0.46;
-
-    return primary + harmonic + micro + turnCurve;
-  }
-
-  float bettaFinVerticalFlutter(float zPos, float yPos) {
-    float dist = max(0.0, 0.68 - zPos);
-    float normD = dist / 2.65;
-    // Vertical silk billow across dorsal fin canopy and caudal veil
-    float billow = sin(uTime * 3.6 - dist * 3.2 + yPos * 2.2) * (pow(normD, 1.6) * 0.025);
-    return billow;
+  float bettaFinRipple(float zPos, float yPos) {
+    // Only ripple behind the body attachment line (zPos < 0.45) so fins NEVER detach from spine
+    float dist = max(0.0, 0.45 - zPos);
+    float normD = dist / 2.4;
+    float ripple = sin(uTime * 5.8 - dist * 4.2 + yPos * 2.2) * pow(normD, 1.7) * 0.015;
+    return ripple;
   }
 `;
 
@@ -170,11 +149,11 @@ function createLuminanceBumpTexture(
   const imageData = ctx.getImageData(0, 0, w, h);
   const data = imageData.data;
 
-  // Convert scale & fin-ray luminance into tactile organic micro-relief
+  // Convert scale & fin-ray luminance into subtle organic micro-relief
   for (let i = 0; i < data.length; i += 4) {
     const a = data[i + 3] / 255;
-    const luma = 0.35 * data[i] + 0.5 * data[i + 1] + 0.15 * data[i + 2];
-    const relief = THREE.MathUtils.clamp((luma * 1.35 - 12) * a, 0, 255);
+    const luma = 0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2];
+    const relief = THREE.MathUtils.clamp((luma * 1.25 - 18) * a, 0, 255);
     data[i] = relief;
     data[i + 1] = relief;
     data[i + 2] = relief;
@@ -353,9 +332,10 @@ function createFinShellGeometry(side: 1 | -1): THREE.BufferGeometry {
   return geo;
 }
 
-function attachBodySpineShader(
+function attachSpineShader(
   material: THREE.MeshPhysicalMaterial,
   uniforms: BettaRig["uniforms"],
+  isFin: boolean,
   cacheKey: string
 ): void {
   material.customProgramCacheKey = () => cacheKey;
@@ -364,34 +344,19 @@ function attachBodySpineShader(
     shader.uniforms.uSwimSpeed = uniforms.uSwimSpeed;
     shader.uniforms.uTurnBend = uniforms.uTurnBend;
 
-    shader.vertexShader = `${SPINE_GLSL_HELPERS}\n${shader.vertexShader}`.replace(
-      "#include <begin_vertex>",
+    const displacement = isFin
+      ? `
+      #include <begin_vertex>
+      transformed.x += bettaSpineWave(transformed.z) + bettaFinRipple(transformed.z, transformed.y);
       `
+      : `
       #include <begin_vertex>
       transformed.x += bettaSpineWave(transformed.z);
-      `
-    );
-  };
-}
-
-function attachFinSpineShader(
-  material: THREE.MeshPhysicalMaterial,
-  uniforms: BettaRig["uniforms"],
-  cacheKey: string
-): void {
-  material.customProgramCacheKey = () => cacheKey;
-  material.onBeforeCompile = (shader) => {
-    shader.uniforms.uTime = uniforms.uTime;
-    shader.uniforms.uSwimSpeed = uniforms.uSwimSpeed;
-    shader.uniforms.uTurnBend = uniforms.uTurnBend;
+      `;
 
     shader.vertexShader = `${SPINE_GLSL_HELPERS}\n${shader.vertexShader}`.replace(
       "#include <begin_vertex>",
-      `
-      #include <begin_vertex>
-      transformed.x += bettaFinWave(transformed.z, transformed.y);
-      transformed.y += bettaFinVerticalFlutter(transformed.z, transformed.y);
-      `
+      displacement
     );
   };
 }
@@ -453,11 +418,6 @@ export function buildBettaFish(maxAnisotropy = 8): BettaRig {
     return entry;
   };
 
-  // Preload all 3 specimen textures immediately
-  loadEntry(BETTA_PALETTES["01"].texturePath);
-  loadEntry(BETTA_PALETTES["02"].texturePath);
-  loadEntry(BETTA_PALETTES["03"].texturePath);
-
   let currentPalette = initialPalette;
   const initialEntry = loadEntry(initialPalette.texturePath);
 
@@ -469,14 +429,14 @@ export function buildBettaFish(maxAnisotropy = 8): BettaRig {
     emissiveIntensity: initialPalette.emissiveIntensity,
     transparent: false,
     depthWrite: true,
-    roughness: 0.22,
+    roughness: 0.26,
     metalness: 0.08,
-    clearcoat: 0.88,
+    clearcoat: 0.85,
     clearcoatRoughness: 0.12,
     iridescence: initialPalette.iridescence,
     iridescenceIOR: 1.38,
     iridescenceThicknessRange: [120, 360],
-    sheen: 0.7,
+    sheen: 0.75,
     sheenRoughness: 0.28,
     sheenColor: new THREE.Color(initialPalette.sheen),
     side: THREE.FrontSide,
@@ -488,28 +448,24 @@ export function buildBettaFish(maxAnisotropy = 8): BettaRig {
     emissiveMap: initialEntry.map,
     emissive: new THREE.Color(initialPalette.emissive),
     emissiveIntensity: initialPalette.emissiveIntensity * 1.15,
-    alphaTest: 0.04,
+    alphaTest: 0.06,
     transparent: true,
     depthWrite: true,
-    roughness: 0.25,
+    roughness: 0.32,
     metalness: 0.04,
-    clearcoat: 0.68,
-    clearcoatRoughness: 0.16,
+    clearcoat: 0.65,
+    clearcoatRoughness: 0.18,
     iridescence: initialPalette.iridescence * 0.95,
     iridescenceIOR: 1.35,
     iridescenceThicknessRange: [140, 380],
     sheen: 0.85,
-    sheenRoughness: 0.3,
+    sheenRoughness: 0.32,
     sheenColor: new THREE.Color(initialPalette.sheen),
-    transmission: 0.24,
-    thickness: 0.06,
-    attenuationColor: new THREE.Color(initialPalette.attenuationColor),
-    attenuationDistance: 0.45,
-    side: THREE.DoubleSide,
+    side: THREE.FrontSide,
   });
 
-  attachBodySpineShader(bodyMaterial, uniforms, "betta-body-wave-v2");
-  attachFinSpineShader(finMaterial, uniforms, "betta-fin-wave-v2");
+  attachSpineShader(bodyMaterial, uniforms, false, "betta-body-wave-v3");
+  attachSpineShader(finMaterial, uniforms, true, "betta-fin-wave-v3");
 
   const bodyGeo = createClosedBodyGeometry();
   const rightFinGeo = createFinShellGeometry(1);
@@ -529,14 +485,20 @@ export function buildBettaFish(maxAnisotropy = 8): BettaRig {
     bodyMaterial.emissiveMap = entry.map;
     bodyMaterial.bumpMap = entry.bump;
     bodyMaterial.bumpScale = pal.bumpScale;
+    bodyMaterial.color.set(pal.tint);
+    bodyMaterial.emissive.set(pal.emissive);
+    bodyMaterial.emissiveIntensity = pal.emissiveIntensity;
     bodyMaterial.iridescence = pal.iridescence;
 
     finMaterial.map = entry.map;
     finMaterial.emissiveMap = entry.map;
     finMaterial.bumpMap = entry.bump;
     finMaterial.bumpScale = pal.bumpScale * 0.7;
+    finMaterial.color.set(pal.tint);
+    finMaterial.emissive.set(pal.emissive);
+    finMaterial.emissiveIntensity = pal.emissiveIntensity * 1.15;
     finMaterial.iridescence = pal.iridescence * 0.95;
-    finMaterial.attenuationColor.set(pal.attenuationColor);
+    finMaterial.sheenColor.set(pal.sheen);
 
     bodyMaterial.needsUpdate = true;
     finMaterial.needsUpdate = true;
