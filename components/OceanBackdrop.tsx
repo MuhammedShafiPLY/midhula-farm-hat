@@ -5,8 +5,8 @@ import { motion, useReducedMotion } from "framer-motion";
 import oceanBgImg from "@/public/images/ocean-bg.jpg";
 
 /**
- * Deep ocean atmospheric backdrop pairing the sunlit reef seascape with
- * dark abyssal contrast gradients that persist across the entire site to the end.
+ * Deep pond & aquatic atmospheric backdrop pairing sunlit water depth with
+ * deep pond charcoal contrast gradients that persist across the entire site.
  */
 export default function OceanBackdrop() {
   const prefersReducedMotion = useReducedMotion();
@@ -14,12 +14,12 @@ export default function OceanBackdrop() {
   return (
     <div
       aria-hidden="true"
-      className="pointer-events-none fixed inset-0 z-0 overflow-hidden bg-[#02060f]"
+      className="pointer-events-none fixed inset-0 z-0 overflow-hidden bg-[#0b0f13]"
     >
-      {/* Underwater sunlit ocean reef photograph continuing to the end */}
+      {/* Underwater sunlit aquatic photograph continuing across all sections */}
       <motion.div
         initial={prefersReducedMotion ? false : { opacity: 0, scale: 1.04 }}
-        animate={{ opacity: 0.9, scale: 1 }}
+        animate={{ opacity: 0.88, scale: 1 }}
         transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
         className="absolute inset-0"
       >
@@ -29,33 +29,33 @@ export default function OceanBackdrop() {
           fill
           priority
           sizes="100vw"
-          className="object-cover object-center select-none"
+          className="object-cover object-center select-none opacity-80"
         />
       </motion.div>
 
-      {/* Directional dark abyssal overlay so left-side typography stays razor-crisp */}
+      {/* Directional deep pond charcoal overlay keeping typography and specimen cards razor-crisp */}
       <div
         className="absolute inset-0"
         style={{
           background:
-            "linear-gradient(96deg, rgba(2, 8, 16, 0.88) 0%, rgba(2, 11, 22, 0.6) 46%, rgba(2, 12, 24, 0.28) 100%)",
+            "linear-gradient(96deg, rgba(11, 15, 19, 0.94) 0%, rgba(11, 17, 24, 0.75) 48%, rgba(11, 17, 24, 0.4) 100%)",
         }}
       />
 
-      {/* Radial vignette preserving bright sunlit center-right water */}
+      {/* Radial vignette preserving warm organic water lighting in the center-right */}
       <div
         className="absolute inset-0"
         style={{
           background:
-            "radial-gradient(100% 95% at 62% 45%, transparent 38%, rgba(1, 5, 11, 0.82) 100%)",
+            "radial-gradient(100% 95% at 62% 45%, transparent 35%, rgba(11, 15, 19, 0.88) 100%)",
         }}
       />
 
-      {/* Subtle bottom ocean-floor deepening gradient */}
-      <div className="absolute inset-x-0 bottom-0 h-64 bg-gradient-to-t from-[#01040a]/80 via-[#01040a]/40 to-transparent" />
+      {/* Deep pond bottom grounding gradient */}
+      <div className="absolute inset-x-0 bottom-0 h-72 bg-gradient-to-t from-[#0b0f13] via-[#0b0f13]/70 to-transparent" />
 
-      {/* Minimalist agency framing accents */}
-      <div className="absolute inset-y-0 left-1/2 hidden w-px bg-gradient-to-b from-transparent via-white/[0.04] to-transparent lg:block" />
+      {/* Subtle architectural vertical alignment divider */}
+      <div className="absolute inset-y-0 left-1/2 hidden w-px bg-gradient-to-b from-transparent via-amber-400/[0.08] to-transparent lg:block" />
     </div>
   );
 }

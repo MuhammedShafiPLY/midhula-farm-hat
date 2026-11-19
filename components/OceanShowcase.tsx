@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useReducedMotion } from "framer-motion";
 import AboutSection from "@/components/AboutSection";
+import CommunitySection from "@/components/CommunitySection";
 import ContactSection from "@/components/ContactSection";
 import CustomCursor from "@/components/CustomCursor";
 import FishExplanationSection from "@/components/FishExplanationSection";
@@ -92,7 +93,7 @@ export default function OceanShowcase() {
   };
 
   return (
-    <div className="relative min-h-screen bg-[#02060f] text-white selection:bg-sky-400/30 selection:text-white">
+    <div className="relative min-h-screen bg-[#0b0f13] text-white selection:bg-amber-400/30 selection:text-white">
       {/* Full-viewport persistent ocean backdrop continuing to the end */}
       <OceanBackdrop />
 
@@ -126,6 +127,7 @@ export default function OceanShowcase() {
         />
         <FishExplanationSection onTriggerFishAction={handleTriggerFishAction} />
         <AboutSection />
+        <CommunitySection />
         <ContactSection
           selectedSpecimenSlug={inquirySlug}
           onSpecimenSlugChange={setInquirySlug}

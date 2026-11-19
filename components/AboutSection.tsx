@@ -18,72 +18,72 @@ interface SanctuaryProtocol {
 
 const PROTOCOLS: SanctuaryProtocol[] = [
   {
-    id: "blackwater",
+    id: "shipping",
     number: "01",
-    title: "Botanical Blackwater Chemistry",
-    subtitle: "Indian Almond Leaf & Humic Acid Steeping",
+    title: "Oxygenated Live Fish Shipping",
+    subtitle: "Insulated Thermocol Packing with 100% Live Arrival Guarantee",
     description:
-      "Unlike sterile glass tanks, our nursery biotopes are enriched with dried Indian almond leaves (Terminalia catappa) and wild alder cones. Natural tannins lower fungal risk, buffer pH naturally between 6.4 and 7.0, and deepen the iridescent blue and crimson pigments of our showlines.",
+      "We take pride in our proven all-India live fish transit methodology. Every specimen is fasted for 24 hours to preserve pure water chemistry, packed with medical-grade oxygen in heavy-gauge double bags, and insulated inside durable thermocol boxes labeled 'LIVE ORNAMENTAL FISH' for express door-to-door delivery across Kerala and India.",
     specs: [
-      { label: "Target pH", value: "6.4 – 6.9 Tannin Buffered" },
-      { label: "Water Tint", value: "Golden-Amber Tea Clarity" },
-      { label: "Immunity Benefit", value: "Antimicrobial Slime Coat Hardening" },
-      { label: "Substrate", value: "Fine Inert River Sand & Leaf Litter" },
+      { label: "Dispatch Coverage", value: "All Kerala & Pan-India Express" },
+      { label: "Transit Method", value: "Double-Bagged Pure Oxygen" },
+      { label: "Box Thermal Guard", value: "High-Density Thermocol Insulation" },
+      { label: "Arrival Assurance", value: "100% Live Arrival Guarantee" },
     ],
-    botanicalPairing: "Grade-A Catappa Bark & Driftwood",
+    botanicalPairing: "Catappa Infused Transit Water",
+  },
+  {
+    id: "blackwater",
+    number: "02",
+    title: "Natural Pond Tub Husbandry",
+    subtitle: "Sun-Warmed Kerala Blackwater Biotopes",
+    description:
+      "Unlike sterile indoor racks, our breeding colonies thrive in outdoor black tubs steeped with dried Indian almond leaves (Terminalia catappa) and natural river gravel. Gentle sun exposure and beneficial tannins fortify fish slime coats, prevent fungal vectors, and enhance natural iridescence.",
+    specs: [
+      { label: "Target pH", value: "6.8 – 7.4 Tannin Buffered" },
+      { label: "Water Tint", value: "Golden-Amber Tea Clarity" },
+      { label: "Natural Lighting", value: "Dappled Tropical Canopy Sun" },
+      { label: "Environment", value: "Spacious Outdoor Conditioning Tubs" },
+    ],
+    botanicalPairing: "Dried Catappa Bark & Indian Botanicals",
   },
   {
     id: "genetics",
-    number: "02",
-    title: "Selective F3–F4 Show Pedigrees",
-    subtitle: "Mathematical 180° Caudal Symmetry & Clean Ray Splitting",
-    description:
-      "Every breeding cycle at Midhula Farm Hut pairs documented showlines focusing on full 180-degree caudal flare posture, uncurled outer fin margins, and luminous dragon scale coverage. We select strictly for robust swimming vitality and calm, curious temperaments.",
-    specs: [
-      { label: "Caudal Spread", value: "True 180° Flat D-Shape" },
-      { label: "Ray Division", value: "Secondary & Tertiary Branching" },
-      { label: "Scale Density", value: "Even Metallic Guanine Matrix" },
-      { label: "Lineage", value: "Selective Closed Showline Colony" },
-    ],
-    botanicalPairing: "Floating Frogbit & Hornwort Canopy",
-  },
-  {
-    id: "nutrition",
     number: "03",
-    title: "Artisan Live Micro-Culturing",
-    subtitle: "Instinct-Driven Hunting & Astaxanthin Enrichment",
+    title: "Selective F3–F4 Showlines",
+    subtitle: "Mathematical Symmetrical Fins & Dragon Scales",
     description:
-      "We raise our fry and prime adults on live cultures cultivated on-site—including newly hatched Artemia nauplii, freshwater Moina, and Daphnia. Live prey stimulates natural predatory hunting instincts and guarantees vibrant natural colors without synthetic dyes.",
+      "Our breeding pairs focus on delta veil expansion in exotic guppies, clean symmetrical ray splitting, vibrant cobalt exoskeletons in electric blue crayfish, and radiant sunburst platies. Every strain is selected for high disease immunity and active, confident schooling temperament.",
     specs: [
-      { label: "Primary Diet", value: "Live Artemia Nauplii & Moina" },
-      { label: "Carotenoid Source", value: "Natural Astaxanthin & Spirulina" },
-      { label: "Feeding Frequency", value: "Twice Daily Live Micro-Feedings" },
-      { label: "Digestion Index", value: "Clean Zero-Waste Conversion" },
+      { label: "Guppy Tail Spread", value: "Delta Broadtail 70° Veil" },
+      { label: "Crayfish Chitin", value: "Solid Cobalt-Blue Exoskeleton" },
+      { label: "Immunity Index", value: "Acclimated to Indian Tap Water" },
+      { label: "Lineage Record", value: "Controlled F3–F4 Hatchery Colony" },
     ],
-    botanicalPairing: "Micro-Fauna Infused Moss Mats",
+    botanicalPairing: "Floating Guppy Grass & Java Moss",
   },
   {
-    id: "vessel",
+    id: "aquatic-care",
     number: "04",
-    title: "Individual Low-Flow Vessels",
-    subtitle: "Spacious Planted Biotope Conditioning",
+    title: "Live Feed & Prophylactic Care",
+    subtitle: "Live Artemia Nauplii & Monitored KMnO₄ Baths",
     description:
-      "We reject cramped mass breeding jars. Each developing male transitions early into an individual, densely planted conditioning vessel with gentle baffled filtration and resting surface perches, ensuring pristine, unbroken fin growth.",
+      "Healthy fish start with living food. Fry and breeders receive daily live Artemia nauplii, Moina, and Daphnia rich in natural astaxanthin. Prior to dispatch, fish receive a monitored Potassium Permanganate (KMnO₄) conditioning dip to eliminate external protozoa and ensure a pathogen-free arrival.",
     specs: [
-      { label: "Minimum Space", value: "20L Planted Biotope Per Resident" },
-      { label: "Flow Velocity", value: "< 0.02 m/s Baffled Sponge" },
-      { label: "Oxygenation", value: "Natural Surface Plants & Labyrinth Air" },
-      { label: "Resting Perches", value: "Submerged Broad Anubias Foliage" },
+      { label: "Live Food Culturing", value: "Fresh Artemia Nauplii & Moina" },
+      { label: "Parasite Control", value: "Mild KMnO₄ Prophylactic Dip" },
+      { label: "Feeding Rhythm", value: "Twice Daily Live Micro-Feedings" },
+      { label: "Growth Factor", value: "Natural Astaxanthin Pigment" },
     ],
-    botanicalPairing: "Anubias Nana & Floating Pistia",
+    botanicalPairing: "Clean Micro-Fauna Infused Moss",
   },
 ];
 
 const METRICS = [
-  { value: "26.8°C", label: "Thermal Stability", note: "Digitally Regulated" },
-  { value: "180°", label: "Caudal Flare Target", note: "Clean Ray Bifurcation" },
-  { value: "F3–F4", label: "Documented Lineages", note: "Pedigree Verified" },
-  { value: "100%", label: "Live Micro-Fed", note: "Zero Mass Pellets" },
+  { value: "26.8°C", label: "Tropical Pond Stability", note: "Naturally Sunlit Tubs" },
+  { value: "100%", label: "Oxygenated Box Shipping", note: "Safe All-India Transit" },
+  { value: "F3–F4", label: "Tracked Pedigree Lines", note: "Nooluvally Showlines" },
+  { value: "75K+", label: "Kerala Aquarist Community", note: "YouTube & Instagram" },
 ];
 
 export default function AboutSection() {
@@ -95,12 +95,12 @@ export default function AboutSection() {
     <section
       id="about"
       aria-labelledby="about-heading"
-      className="relative overflow-hidden border-t border-white/10 bg-[#020610]/75 px-6 py-24 backdrop-blur-[2px] sm:px-10 sm:py-32 md:px-14"
+      className="relative overflow-hidden border-t border-white/10 bg-[#0b0f13]/85 px-6 py-24 backdrop-blur-[2px] sm:px-10 sm:py-32 md:px-14"
     >
-      {/* Deep-water ambient lighting */}
+      {/* Deep pond ambient lighting */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -top-40 right-1/4 h-[500px] w-[500px] rounded-full bg-sky-500/[0.04] blur-[150px]"
+        className="pointer-events-none absolute -top-40 right-1/4 h-[500px] w-[500px] rounded-full bg-amber-500/[0.04] blur-[150px]"
       />
 
       <div className="relative mx-auto max-w-7xl">
@@ -115,41 +115,39 @@ export default function AboutSection() {
           <div className="relative pl-5 sm:pl-7">
             <span
               aria-hidden="true"
-              className="absolute top-1 left-0 h-10 w-[1px] bg-gradient-to-b from-sky-300/70 to-transparent"
+              className="absolute top-1 left-0 h-10 w-[2px] bg-gradient-to-b from-amber-400 to-transparent"
             />
             <span
               aria-hidden="true"
-              className="absolute top-1 left-0 h-[1px] w-4 bg-sky-300/70"
+              className="absolute top-1 left-0 h-[2px] w-5 bg-amber-400"
             />
-            <p className="font-display text-[11px] font-semibold tracking-[0.38em] text-sky-300/80 uppercase">
-              Sanctuary Standards • Midhula Farm Hut
+            <p className="font-display text-[11px] font-bold tracking-[0.34em] text-amber-400 uppercase">
+              Farm Husbandry & Shipping • Midhula Farm Hut
             </p>
             <h2
               id="about-heading"
-              className="font-display mt-3 text-3xl font-extrabold leading-tight tracking-tight text-white uppercase sm:text-5xl"
+              className="font-display mt-3 text-3xl font-extrabold leading-tight tracking-tight text-[#f8fafc] uppercase sm:text-5xl"
             >
               The Sanctuary Craft
             </h2>
           </div>
 
-          <p className="max-w-md text-sm leading-relaxed text-slate-400">
-            Nestled in quiet husbandry traditions, Midhula Farm Hut raises
-            small-batch Betta splendens not on mass racks, but inside balanced,
-            sunlit blackwater ecosystems with unhurried care.
+          <p className="max-w-md text-sm leading-relaxed text-[#94a3b8]">
+            Nestled in Nooluvally, Thrissur, Midhula Farm Hut combines natural outdoor breeding tub aquaculture with professional insulated courier transit, dispatching disease-free, vibrant stock across India.
           </p>
         </motion.div>
 
         {/* Minimalist 4-Metric Showcase Bar */}
-        <div className="mt-14 grid grid-cols-2 gap-4 border-y border-white/10 py-7 lg:grid-cols-4 lg:gap-8">
+        <div className="mt-14 grid grid-cols-2 gap-4 border-y border-white/10 py-7 lg:grid-cols-4 lg:gap-8 bg-[#151c24]/50 backdrop-blur-md px-6">
           {METRICS.map((metric) => (
-            <div key={metric.label} className="border-l border-white/10 pl-4 sm:pl-6">
+            <div key={metric.label} className="border-l-2 border-amber-400/50 pl-4 sm:pl-6">
               <span className="font-display block text-2xl font-black tracking-tight text-white sm:text-3xl">
                 {metric.value}
               </span>
-              <span className="mt-1 block text-xs font-semibold tracking-[0.2em] text-sky-300 uppercase">
+              <span className="mt-1 block text-xs font-bold tracking-[0.18em] text-amber-300 uppercase">
                 {metric.label}
               </span>
-              <span className="mt-0.5 block text-[11px] text-slate-500">
+              <span className="mt-0.5 block text-[11px] text-[#94a3b8]">
                 {metric.note}
               </span>
             </div>
@@ -160,8 +158,8 @@ export default function AboutSection() {
         <div className="mt-14 grid grid-cols-1 gap-8 lg:grid-cols-12 lg:items-start">
           {/* Left Column: Interactive Protocol Selector Tabs */}
           <div className="space-y-3 lg:col-span-5">
-            <span className="block text-[10px] font-semibold tracking-[0.26em] text-slate-400 uppercase mb-4">
-              Explore Husbandry Pillars:
+            <span className="block text-[10px] font-bold tracking-[0.26em] text-[#94a3b8] uppercase mb-4">
+              Explore Farm Husbandry Standards:
             </span>
             {PROTOCOLS.map((protocol) => {
               const isSelected = activeProtocol.id === protocol.id;
@@ -173,14 +171,14 @@ export default function AboutSection() {
                   onClick={() => setActiveProtocol(protocol)}
                   className={`cursor-pointer group flex w-full flex-col border p-5 text-left transition-all duration-300 ${
                     isSelected
-                      ? "border-sky-300/80 bg-[#040e22]/90 shadow-[0_0_24px_rgba(56,189,248,0.18)]"
-                      : "border-white/10 bg-[#030915]/50 hover:border-sky-300/40 hover:bg-[#030915]/80"
+                      ? "border-amber-400/80 bg-[#151c24] shadow-[0_0_24px_rgba(245,158,11,0.18)]"
+                      : "border-white/10 bg-[#151c24]/50 hover:border-amber-400/40 hover:bg-[#151c24]/80"
                   }`}
                 >
                   <div className="flex items-center justify-between w-full">
                     <span
                       className={`font-mono text-xs font-bold tracking-widest ${
-                        isSelected ? "text-sky-300" : "text-slate-500"
+                        isSelected ? "text-amber-400" : "text-[#94a3b8]"
                       }`}
                     >
                       {protocol.number}
@@ -188,15 +186,15 @@ export default function AboutSection() {
                     <span
                       className={`h-2 w-2 rounded-full transition-transform ${
                         isSelected
-                          ? "bg-sky-300 scale-125 shadow-[0_0_8px_rgba(56,189,248,0.9)]"
+                          ? "bg-amber-400 scale-125 shadow-[0_0_8px_rgba(245,158,11,0.9)]"
                           : "bg-white/20 group-hover:bg-white/50"
                       }`}
                     />
                   </div>
-                  <h3 className="font-display mt-2 text-base font-bold text-white group-hover:text-sky-100 sm:text-lg">
+                  <h3 className="font-display mt-2 text-base font-bold text-white group-hover:text-amber-200 sm:text-lg">
                     {protocol.title}
                   </h3>
-                  <p className="mt-1 text-xs text-slate-400 line-clamp-1">
+                  <p className="mt-1 text-xs text-[#94a3b8] line-clamp-1">
                     {protocol.subtitle}
                   </p>
                 </button>
@@ -205,7 +203,7 @@ export default function AboutSection() {
           </div>
 
           {/* Right Column: Active Protocol Deep-Dive Inspection Card */}
-          <div className="border border-sky-300/20 bg-[#040d1e]/95 p-6 shadow-2xl shadow-black/80 lg:col-span-7 sm:p-10">
+          <div className="border border-white/10 bg-[#151c24]/95 p-6 shadow-2xl lg:col-span-7 sm:p-10 backdrop-blur-md">
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeProtocol.id}
@@ -217,10 +215,10 @@ export default function AboutSection() {
               >
                 <div>
                   <div className="flex items-center justify-between gap-4">
-                    <span className="font-mono text-[11px] tracking-widest text-sky-300 uppercase">
+                    <span className="font-mono text-[11px] font-bold tracking-widest text-amber-400 uppercase">
                       MIDHULA SANCTUARY PILLAR [{activeProtocol.number} • 04]
                     </span>
-                    <span className="border border-white/15 bg-white/[0.04] px-2.5 py-1 text-[10px] tracking-wider text-slate-300 uppercase">
+                    <span className="border border-emerald-400/40 bg-emerald-500/10 px-2.5 py-1 text-[10px] font-semibold tracking-wider text-emerald-300 uppercase">
                       {activeProtocol.botanicalPairing}
                     </span>
                   </div>
@@ -228,7 +226,7 @@ export default function AboutSection() {
                   <h3 className="font-display mt-3 text-2xl font-bold tracking-tight text-white sm:text-3xl">
                     {activeProtocol.title}
                   </h3>
-                  <p className="mt-1 text-xs font-medium tracking-wide text-sky-200/80">
+                  <p className="mt-1 text-xs font-semibold tracking-wide text-amber-300/90">
                     {activeProtocol.subtitle}
                   </p>
                 </div>
@@ -239,8 +237,8 @@ export default function AboutSection() {
 
                 {/* Technical Specifications Grid */}
                 <div>
-                  <span className="block text-[10px] font-semibold tracking-[0.24em] text-slate-400 uppercase mb-3">
-                    Conditioning Criteria:
+                  <span className="block text-[10px] font-bold tracking-[0.24em] text-[#94a3b8] uppercase mb-3">
+                    Conditioning & Transit Criteria:
                   </span>
                   <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                     {activeProtocol.specs.map((item) => (
@@ -248,10 +246,10 @@ export default function AboutSection() {
                         key={item.label}
                         className="border border-white/10 bg-white/[0.025] px-4 py-3"
                       >
-                        <span className="block text-[10px] tracking-[0.22em] text-slate-400 uppercase">
+                        <span className="block text-[10px] tracking-[0.22em] text-[#94a3b8] uppercase">
                           {item.label}
                         </span>
-                        <span className="mt-1 block text-xs font-semibold text-sky-100">
+                        <span className="mt-1 block text-xs font-semibold text-white">
                           {item.value}
                         </span>
                       </div>
@@ -259,17 +257,17 @@ export default function AboutSection() {
                   </div>
                 </div>
 
-                {/* Bottom Callout & Link to Contact */}
+                {/* Bottom Callout & Link to Contact / WhatsApp */}
                 <div className="flex flex-wrap items-center justify-between gap-4 border-t border-white/10 pt-6">
-                  <span className="text-xs text-slate-400">
-                    Need guidance tailoring your planted biotope?
+                  <span className="text-xs text-[#94a3b8]">
+                    Questions regarding safe delivery to your pincode?
                   </span>
                   <a
                     href="#contact"
                     data-cursor="interactive"
-                    className="cursor-pointer inline-flex items-center gap-2 border border-sky-300/60 bg-sky-400/15 px-4 py-2 text-xs font-semibold tracking-[0.2em] text-sky-100 uppercase transition-colors hover:border-sky-300 hover:bg-sky-400/25"
+                    className="cursor-pointer inline-flex items-center gap-2 border border-amber-400 bg-amber-400 px-4 py-2.5 text-xs font-bold tracking-[0.2em] text-[#0b0f13] uppercase transition-all hover:bg-amber-300 shadow-md shadow-amber-950/40"
                   >
-                    <span>Consult Our Hatchery</span>
+                    <span>Check Live Shipping</span>
                     <span aria-hidden="true">→</span>
                   </a>
                 </div>

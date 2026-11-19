@@ -97,10 +97,10 @@ export default function CustomCursor() {
         <motion.span
           animate={{
             scale: dotScale,
-            backgroundColor: interactive ? "#38bdf8" : "#ffffff",
+            backgroundColor: interactive ? "#f59e0b" : "#f8fafc",
           }}
           transition={{ type: "spring", stiffness: 520, damping: 28 }}
-          className="-translate-x-1/2 -translate-y-1/2 block h-2.5 w-2.5 rounded-full shadow-[0_0_12px_rgba(56,189,248,1),0_0_24px_rgba(14,165,233,0.75)] ring-1 ring-white/80"
+          className="-translate-x-1/2 -translate-y-1/2 block h-2.5 w-2.5 rounded-full shadow-[0_0_12px_rgba(245,158,11,1),0_0_24px_rgba(16,185,129,0.7)] ring-1 ring-white/90"
         />
       </motion.div>
     </div>
